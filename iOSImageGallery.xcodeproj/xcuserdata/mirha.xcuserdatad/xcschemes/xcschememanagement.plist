@@ -9,10 +9,20 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>iosImageFilters.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>CA451D8A1D02C5AF005EF8D4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>CAFD42D61D038EDE00C0D356</key>
 		<dict>
 			<key>primary</key>
 			<true/>

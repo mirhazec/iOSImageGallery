@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SystemConfiguration
 
 
 class DownloadImageUIViewController: UIViewController,NSURLSessionDelegate, NSURLSessionDownloadDelegate {
@@ -50,15 +51,19 @@ class DownloadImageUIViewController: UIViewController,NSURLSessionDelegate, NSUR
     }
     
     @IBAction func downloadImage(sender: AnyObject) {
-        if(self.urlTextField.text != nil){
-             dispatch_async(dispatch_get_main_queue(), {
-            self.url = self.urlTextField.text
+        if(isConnectedToNetwork() == true) {
+            if(self.urlTextField.text != nil){
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.url = self.urlTextField.text
                
-            self.startDownload()
+                    self.startDownload()
                  })
-        }else {
-             self.showAlertDialog("Error", msg: "Url filed cannot be emtpy", viewController: self)
-        }
+            }else {
+                self.showAlertDialog("Error", msg: "Url filed cannot be emtpy", viewController: self)
+            }
+            }else {
+                self.showAlertDialog("Error", msg: "You have no internet connection", viewController: self)
+            }
         
     }
     
@@ -192,6 +197,21 @@ class DownloadImageUIViewController: UIViewController,NSURLSessionDelegate, NSUR
    
     deinit {
         self.downloadsSession.finishTasksAndInvalidate();
+    }
+    func isConnectedToNetwork() -> Bool {
+        var zeroAddress = sockaddr_in()
+        zeroAddress.sin_len = UInt8(sizeofValue(zeroAddress))
+        zeroAddress.sin_family = sa_family_t(AF_INET)
+        let defaultRouteReachability = withUnsafePointer(&zeroAddress) {
+            SCNetworkReachabilityCreateWithAddress(nil, UnsafePointer($0))
+        }
+        var flags = SCNetworkReachabilityFlags()
+        if !SCNetworkReachabilityGetFlags(defaultRouteReachability!, &flags) {
+            return false
+        }
+        let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
+        let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
+        return (isReachable && !needsConnection)
     }
 
 

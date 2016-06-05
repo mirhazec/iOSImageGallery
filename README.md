@@ -1,3 +1,3 @@
 # iOSImageGallery
-Application uses chart pods for graphs
-User must allow app to use photos 
+Application uses chart pods for graphs,
+user must allow app to use photos 

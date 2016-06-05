@@ -51,8 +51,11 @@ class DownloadImageUIViewController: UIViewController,NSURLSessionDelegate, NSUR
     
     @IBAction func downloadImage(sender: AnyObject) {
         if(self.urlTextField.text != nil){
-            self.url = urlTextField.text
+             dispatch_async(dispatch_get_main_queue(), {
+            self.url = self.urlTextField.text
+               
             self.startDownload()
+                 })
         }else {
              self.showAlertDialog("Error", msg: "Url filed cannot be emtpy", viewController: self)
         }
@@ -117,6 +120,7 @@ class DownloadImageUIViewController: UIViewController,NSURLSessionDelegate, NSUR
                  dispatch_async(dispatch_get_main_queue(), {
                     self.showAlertDialog("Succes", msg: "Image saved", viewController: self)
                     self.imageView.image = image
+                    self.imageView.hidden = false
                     self.progressView.setProgress(0.0, animated: true)
                 })
                 
@@ -163,7 +167,8 @@ class DownloadImageUIViewController: UIViewController,NSURLSessionDelegate, NSUR
                     task: NSURLSessionTask,
                     didCompleteWithError error: NSError?){
         self.activeDownload?.downloadTask = nil
-        progressView.setProgress(0.0, animated: true)
+        dispatch_async(dispatch_get_main_queue(), {
+        self.progressView.setProgress(0.0, animated: true)
         if (error != nil) {
           
              self.showAlertDialog("Error", msg: "Please enter correct url", viewController: self)
@@ -171,6 +176,7 @@ class DownloadImageUIViewController: UIViewController,NSURLSessionDelegate, NSUR
             print("The task finished transferring data successfully")
 
         }
+        })
     }
     
     func showAlertDialog(title:String, msg:String, viewController:UIViewController?) {

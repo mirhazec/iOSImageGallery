@@ -13,9 +13,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
     //MARK: IBOutlets
     @IBOutlet weak var collectionView: UICollectionView!
+    
+    
     var images = [UIImage]()
     let assetManager: AssetManager = AssetManager()
     var selectedIndex:Int?
+    let notificationCenter = NSNotificationCenter.defaultCenter()
    
     
     override func viewDidLoad() {
@@ -26,16 +29,50 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         collectionView.delegate = self
         self.registerCells()
         self.images = assetManager.getPhotos()
+        notificationCenter.addObserver(self,
+                                       selector:#selector(ViewController.applicationWillResignActiveNotification),
+                                       name:UIApplicationDidBecomeActiveNotification,
+                                       object:nil)
+        
     }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if(PHPhotoLibrary.authorizationStatus() != PHAuthorizationStatus.Authorized){
+            alertToEncouragePhotoLibraryAccessWhenApplicationStarts()
+        }
+        
+    }
+    
+    func applicationWillResignActiveNotification() {
+        if(self.images.count == 0){
+            self.images = assetManager.getPhotos()
+            self.collectionView.reloadData()
+        }
+        
+        notificationCenter.removeObserver(self)
+    }
+    
+  
     
     func setNavigationItem() {
         self.navigationController?.navigationBar.hidden = false
         let button =  UIBarButtonItem.init(title: "Image from URL", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(self.insertUrl))
         self.navigationItem.rightBarButtonItem = button
     }
-
     
-    // MARK: Actions
+  
+    func alertToEncouragePhotoLibraryAccessWhenApplicationStarts()
+    {
+        //Photo Library not available - Alert
+           let cameraUnavailableAlertController = UIAlertController (title: "Attention", message: "Please check to see if device settings doesn't allow photo library access", preferredStyle: .Alert)
+            let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in }
+            cameraUnavailableAlertController.addAction(OKAction)
+            self.presentViewController(cameraUnavailableAlertController, animated: true) { }
+        
+    }
+    
+ 
     
     func registerCells() {
         let PhotoThumbnailUICollectionViewCell = UINib(nibName: "PhotoThumbnailUICollectionViewCell", bundle:nil)

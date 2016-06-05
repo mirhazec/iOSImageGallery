@@ -16,16 +16,16 @@ struct RGBA {
     
     init?(image: UIImage) {
         
-        guard let cgImage = image.CGImage else { return nil } // 1
+        guard let cgImage = image.CGImage else { return nil }
         
         width = Int(image.size.width)
         height = Int(image.size.height)
-        let bitsPerComponent = 8 // 2
+        let bitsPerComponent = 8
         
         let bytesPerPixel = 4
         let bytesPerRow = width * bytesPerPixel
         let imageData = UnsafeMutablePointer<Pixel>.alloc(width * height)
-        let colorSpace = CGColorSpaceCreateDeviceRGB() // 3
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
         
         var bitmapInfo: UInt32 = CGBitmapInfo.ByteOrder32Big.rawValue
         bitmapInfo |= CGImageAlphaInfo.PremultipliedLast.rawValue & CGBitmapInfo.AlphaInfoMask.rawValue
@@ -36,11 +36,11 @@ struct RGBA {
     }
     
     func toUIImage() -> UIImage? {
-        let bitsPerComponent = 8 // 1
+        let bitsPerComponent = 8
         
         let bytesPerPixel = 4
         let bytesPerRow = width * bytesPerPixel
-        let colorSpace = CGColorSpaceCreateDeviceRGB() // 2
+        let colorSpace = CGColorSpaceCreateDeviceRGB() 
         
         var bitmapInfo: UInt32 = CGBitmapInfo.ByteOrder32Big.rawValue
         bitmapInfo |= CGImageAlphaInfo.PremultipliedLast.rawValue & CGBitmapInfo.AlphaInfoMask.rawValue

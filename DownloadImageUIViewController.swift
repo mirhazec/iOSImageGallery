@@ -91,7 +91,8 @@ class DownloadImageUIViewController: UIViewController,NSURLSessionDelegate, NSUR
             }
         }
     }
-
+    
+    // URL Session delegate functions
     func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL) {
     
         if let originalURL = downloadTask.originalRequest?.URL?.absoluteString,
@@ -105,7 +106,7 @@ class DownloadImageUIViewController: UIViewController,NSURLSessionDelegate, NSUR
             do {
                 try fileManager.removeItemAtURL(destinationURL)
             } catch {
-                // Non-fatal: file probably doesn't exist
+                
             }
             do {
                 try fileManager.copyItemAtURL(location, toURL: destinationURL)
